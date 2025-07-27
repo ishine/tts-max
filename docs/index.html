@@ -365,7 +365,7 @@
             <p>State-of-the-art multilingual text-to-speech synthesis with zero-shot voice cloning and speaking style control</p>
             
             <div class="links">
-                <a href="../main.pdf" class="link-button" target="_blank" rel="noopener noreferrer">Report</a>
+                <a href="../tech_report.pdf" class="link-button" target="_blank" rel="noopener noreferrer">Report</a>
                 <a href="https://github.com/inworld-ai/tts" class="link-button">Code</a>
                 <a href="https://inworld.ai/tts" class="link-button">Playground</a>
             </div>
@@ -413,8 +413,8 @@
                 <a href="#system-architecture" class="link-button">System Architecture</a>
                 <a href="#multilingual-evaluation" class="link-button">Multilingual Evaluation</a>
                 <a href="#multilingual-support" class="link-button">Multilingual Support</a>
-                <a href="#speaking-style-markup" class="link-button">Speaking Style and Non-Verbal Markup</a>
                 <a href="#zero-shot-voice-cloning" class="link-button">Zero-Shot Voice Cloning</a>
+                <a href="#speaking-style-markup" class="link-button">Speaking Style and Non-Verbal Markup</a>
             </div>
         </div>
 
@@ -1349,6 +1349,123 @@
             </div>
         </div>
 
+        <!-- Zero-Shot Voice Cloning -->
+        <div class="demo-section" id="zero-shot-voice-cloning">
+            <h2>Zero-Shot Voice Cloning</h2>
+            <p>Inworld TTS-1 and TTS-1-Max excel at zero-shot voice cloning, allowing you to clone any speaker's voice using just a few seconds of reference audio. Our models leverage in-context learning to capture unique vocal characteristics, speaking patterns, and tonal qualities without requiring additional training or fine-tuning. Below we demonstrate this functionality with the Inworld-tts-1-Max (8.8B) model.</p>
+            
+            <div style="overflow-x: auto; margin-top: 15px;">
+                <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <thead>
+                        <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6; width: 25%;">Reference</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6; width: 50%;">Phrase</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; width: 25%;">Synthesized Speech</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Example 1: Frankie Fingers -->
+                        <tr style="border-bottom: 1px solid #f0f0f0;">
+                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                <audio controls class="audio-player" style="width: 160px;">
+                                    <source src="audiodemos/19.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">
+                                "This thing with...ehh...Frankie 'Fingers' has become a real heartburn, you know? He's like a cannoli where the shell is all soft and the ricotta is filled with lies. You don't just throw out a bad cannoli....no way. Instead you gotta make an example of it so the other pastries in the box know what's what. Am I right?!"
+                            </td>
+                            <td style="padding: 15px; text-align: center;">
+                                <audio controls class="audio-player" style="width: 160px;">
+                                    <source src="audiodemos/Inworld_inworld-tts-1-max_default__demo_aspirational_19_07-27-2025 01-18-35.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        
+                        <!-- Example 2: Knowledge fragility -->
+                        <tr style="border-bottom: 1px solid #f0f0f0;">
+                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                <audio controls class="audio-player" style="width: 160px;">
+                                    <source src="audiodemos/middle_age_female_accent_british.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">
+                                "I don't know what's the matter with people: they don't learn by understanding; they learn by some other way....by rote or something. Their knowledge is so fragile."
+                            </td>
+                            <td style="padding: 15px; text-align: center;">
+                                <audio controls class="audio-player" style="width: 160px;">
+                                    <source src="audiodemos/Inworld_inworld-tts-1-max_default__demo_aspirational_middleagefemaleaccentbrit_07-27-2025 02-00-41.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        
+                        <!-- Example 3: Vinaigrette recipe -->
+                        <tr style="border-bottom: 1px solid #f0f0f0;">
+                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                <audio controls class="audio-player" style="width: 160px;">
+                                    <source src="audiodemos/female_pitched_cartoon_voice.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">
+                                "For a perfect vinaigrette just put a spoonful of Dijon mustard in a jar, add a splash of vinegar and three times as much good olive oil. Next shake it like you're mad at it...REALLY mad at it....and finally add salt and pepper and BOOM! Done."
+                            </td>
+                            <td style="padding: 15px; text-align: center;">
+                                <audio controls class="audio-player" style="width: 160px;">
+                                    <source src="audiodemos/Inworld_inworld-tts-1-max_default__demo_aspirational_femalepitchedcartoonvoice_07-27-2025 01-50-56.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        
+                        <!-- Example 4: Statue of Liberty -->
+                        <tr style="border-bottom: 1px solid #f0f0f0;">
+                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                <audio controls class="audio-player" style="width: 160px;">
+                                    <source src="audiodemos/middle_age_male_6.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">
+                                "Alright folks...if you'll look down toward Lady Liberty's feet, you'll notice she isn't standing still; she's actually striding forward and breaking free from a broken shackle and chain. This powerful detail is a reminder that liberty is an action, not just an idea."
+                            </td>
+                            <td style="padding: 15px; text-align: center;">
+                                <audio controls class="audio-player" style="width: 160px;">
+                                    <source src="audiodemos/Inworld_inworld-tts-1-max_default__demo_aspirational_middleagemale6_07-27-2025 02-13-04.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                        
+                        <!-- Example 5: Romeo and Juliet -->
+                        <tr style="border-bottom: 1px solid #f0f0f0;">
+                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                <audio controls class="audio-player" style="width: 160px;">
+                                    <source src="audiodemos/news.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">
+                                "O Romeo, Romeo! Wherefore art thou Romeo?<br>
+                                Deny thy father and refuse thy name;<br>
+                                Or, if thou wilt not, be but sworn my love,<br>
+                                And I'll no longer be a Capulet."
+                            </td>
+                            <td style="padding: 15px; text-align: center;">
+                                <audio controls class="audio-player" style="width: 160px;">
+                                    <source src="audiodemos/Inworld_inworld-tts-1-max_default__demo_aspirational_news_07-27-2025 02-21-15.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- Speaking Style and Non-Verbal Markup -->
         <div class="demo-section" id="speaking-style-markup">
             <h2>Speaking Style and Non-Verbal Markup</h2>
@@ -1850,12 +1967,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-
-        <!-- Zero-Shot Voice Cloning -->
-        <div class="demo-section" id="zero-shot-voice-cloning">
-            <h2>Zero-Shot Voice Cloning</h2>
-            <p>Inworld TTS-1 and TTS-1-Max excel at zero-shot voice cloning, allowing you to clone any speaker's voice using just a few seconds of reference audio. Our models leverage in-context learning to capture unique vocal characteristics, speaking patterns, and tonal qualities without requiring additional training or fine-tuning.</p>
         </div>
 
         <div class="footer">
