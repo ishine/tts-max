@@ -360,6 +360,60 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Language tabs styles */
+        .language-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 5px;
+        }
+
+        .language-tab {
+            padding: 12px 20px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #495057;
+            transition: all 0.2s ease;
+            position: relative;
+            outline: none;
+        }
+
+        .language-tab:hover {
+            background: #e9ecef;
+            color: #2c3e50;
+        }
+
+        .language-tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+        }
+
+        .language-tab:focus {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        .tab-content {
+            margin-top: 10px;
+        }
+
+        .language-panel {
+            display: none;
+        }
+
+        .language-panel.active {
+            display: block;
+        }
+
         /* Mobile responsive table improvements */
         @media (max-width: 768px) {
             #multilingual-table table {
@@ -374,13 +428,34 @@
             .audio-player {
                 width: 120px !important;
             }
-            
-            /* Hide text column on very small screens, keep only language and audio */
-            @media (max-width: 600px) {
-                #multilingual-table th:nth-child(3),
-                #multilingual-table td:nth-child(3) {
-                    display: none;
-                }
+
+            .language-tabs {
+                justify-content: center;
+            }
+
+            .language-tab {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            /* In the tabbed structure, columns are: Speaker, Text, TTS-1, TTS-1-Max
+               Hide the Speaker column (1st), keep Text column visible */
+            #multilingual-table th:nth-child(1),
+            #multilingual-table td:nth-child(1) {
+                display: none;
+            }
+
+            .language-tab {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+                min-width: 60px;
+                text-align: center;
+            }
+
+            .language-tabs {
+                gap: 3px;
             }
         }
     </style>
@@ -522,23 +597,48 @@
                 </button>
             </div>
             
-            <div id="multilingual-table" style="display: none; overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <thead>
-                        <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
-                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6; width: 80px;">Language</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Speaker</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Text</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6; width: 180px;">TTS-1</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; width: 180px;">TTS-1-Max</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- TV/Media Group -->
-                        <!-- Ashley (TV Host) -->
-                        <tr style="border-bottom: 1px solid #f0f0f0;">
-                            <td rowspan="11" style="padding: 15px; vertical-align: middle; text-align: center; border-right: 1px solid #f0f0f0; font-weight: 600; color: #2c3e50; background: #fafbfc;">English<br/>(EN)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Ashley (TV Host)</td>
+            <div id="multilingual-table" style="display: none;">
+                <!-- Language Tabs -->
+                <div class="language-tabs" role="tablist">
+                    <button class="language-tab active" role="tab" aria-selected="true" aria-controls="english-panel" id="english-tab" data-language="english">
+                        English
+                    </button>
+                    <button class="language-tab" role="tab" aria-selected="false" aria-controls="chinese-panel" id="chinese-tab" data-language="chinese">
+                        Chinese
+                    </button>
+                    <button class="language-tab" role="tab" aria-selected="false" aria-controls="spanish-panel" id="spanish-tab" data-language="spanish">
+                        Spanish
+                    </button>
+                    <button class="language-tab" role="tab" aria-selected="false" aria-controls="french-panel" id="french-tab" data-language="french">
+                        French
+                    </button>
+                    <button class="language-tab" role="tab" aria-selected="false" aria-controls="korean-panel" id="korean-tab" data-language="korean">
+                        Korean
+                    </button>
+                    <button class="language-tab" role="tab" aria-selected="false" aria-controls="dutch-panel" id="dutch-tab" data-language="dutch">
+                        Dutch
+                    </button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- English Panel -->
+                    <div class="language-panel active" role="tabpanel" id="english-panel" aria-labelledby="english-tab">
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                <thead>
+                                    <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Speaker</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Text</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6; width: 180px;">TTS-1</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; width: 180px;">TTS-1-Max</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- TV/Media Group -->
+                                    <!-- Ashley (TV Host) -->
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Ashley (TV Host)</td>
                             <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"Breaking news this morning! Scientists have made an incredible discovery about renewable energy. This breakthrough could change everything we know about solar power technology. Here are the details."</td>
                             <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
                                 <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Ashley_en_Breakingne__inworld-tts-1_20250722131822.wav" preload="none">
@@ -737,198 +837,277 @@
                             </td>
                         </tr>
                         
-                        <!-- Chinese Examples -->
-                        <tr style="border-top: 3px solid #2c3e50; border-bottom: 1px solid #f0f0f0;">
-                            <td rowspan="3" style="padding: 15px; vertical-align: middle; text-align: center; border-right: 1px solid #f0f0f0; font-weight: 600; color: #2c3e50; background: #fafbfc;">Chinese<br/>(ZH)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Jing (Assistant)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"我很乐意为您提供更多帮助。"<br><small style="color: #6c757d; font-style: italic;">(Eng: I would be happy to provide more help.)</small></td>
-                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Jing_zh_我很乐意为您提供更多__inworld-tts-1_20250721215607.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Jing_zh_我很乐意为您提供更多__inworld-tts-1-max_20250721215608.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #f0f0f0;">
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Xinyi (News Anchor)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"国际局势风云变幻，本台记者将为您带来详细报道。"<br><small style="color: #6c757d; font-style: italic;">(Eng: The international situation is changing rapidly, and our correspondent will bring you a detailed report.)</small></td>
-                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Xinyi_zh_国际局势风云变幻本台__inworld-tts-1_20250721215550.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Xinyi_zh_国际局势风云变幻本台__inworld-tts-1-max_20250721215552.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #f0f0f0;">
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Yichen (Storyteller)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"每当夜幕降临，村庄里就会传来神秘的歌声。"<br><small style="color: #6c757d; font-style: italic;">(Eng: Whenever night falls, mysterious singing comes from the village.)</small></td>
-                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Yichen_zh_每当夜幕降临村庄里就__inworld-tts-1_20250721215612.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Yichen_zh_每当夜幕降临村庄里就__inworld-tts-1-max_20250721215613.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                        </tr>
-                        
-                        <!-- Spanish Examples -->
-                        <tr style="border-top: 3px solid #2c3e50; border-bottom: 1px solid #f0f0f0;">
-                            <td rowspan="3" style="padding: 15px; vertical-align: middle; text-align: center; border-right: 1px solid #f0f0f0; font-weight: 600; color: #2c3e50; background: #fafbfc;">Spanish<br/>(ES)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Diego (Customer Service)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"Estamos trabajando para resolver su solicitud lo antes posible."<br><small style="color: #6c757d; font-style: italic;">(Eng: We are working to resolve your request as soon as possible.)</small></td>
-                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Diego_es_Estamostra__inworld-tts-1_20250721215633.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Diego_es_Estamostra__inworld-tts-1-max_20250721215634.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #f0f0f0;">
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Lupita (Friend)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"¿Quieres que vayamos por un café después?"<br><small style="color: #6c757d; font-style: italic;">(Eng: Do you want to go for coffee later?)</small></td>
-                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Lupita_es_Quieresque__inworld-tts-1_20250721215620.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Lupita_es_Quieresque__inworld-tts-1-max_20250721215621.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #f0f0f0;">
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Miguel (Host)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"Hoy exploraremos las profundidades de la creatividad humana."<br><small style="color: #6c757d; font-style: italic;">(Eng: Today we will explore the depths of human creativity.)</small></td>
-                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Miguel_es_Hoyexplora__inworld-tts-1_20250721215642.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Miguel_es_Hoyexplora__inworld-tts-1-max_20250721215642.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                        </tr>
-                        
-                        <!-- French Examples -->
-                        <tr style="border-top: 3px solid #2c3e50; border-bottom: 1px solid #f0f0f0;">
-                            <td rowspan="2" style="padding: 15px; vertical-align: middle; text-align: center; border-right: 1px solid #f0f0f0; font-weight: 600; color: #2c3e50; background: #fafbfc;">French<br/>(FR)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Hélène (Friend)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"On devrait se voir bientôt pour prendre un café et discuter."<br><small style="color: #6c757d; font-style: italic;">(Eng: We should meet soon for a coffee and chat.)</small></td>
-                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Hélène_fr_Ondevraits__inworld-tts-1_20250721215536.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Hélène_fr_Ondevraits__inworld-tts-1-max_20250721215537.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #f0f0f0;">
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Mathieu (Host)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"Bienvenue à notre podcast, où nous explorons les mystères de l'univers."<br><small style="color: #6c757d; font-style: italic;">(Eng: Welcome to our podcast, where we explore the mysteries of the universe.)</small></td>
-                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Mathieu_fr_Bienvenueà__inworld-tts-1_20250721215520.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Mathieu_fr_Bienvenueà__inworld-tts-1-max_20250721215521.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                        </tr>
-                        
-                        <!-- Korean Examples -->
-                        <tr style="border-top: 3px solid #2c3e50; border-bottom: 1px solid #f0f0f0;">
-                            <td rowspan="2" style="padding: 15px; vertical-align: middle; text-align: center; border-right: 1px solid #f0f0f0; font-weight: 600; color: #2c3e50; background: #fafbfc;">Korean<br/>(KO)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Hyunwoo (Host)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"궁금한 점이 있으시면 언제든지 말씀해주세요."<br><small style="color: #6c757d; font-style: italic;">(Eng: If you have any questions, please feel free to ask at any time.)</small></td>
-                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Hyunwoo_ko_궁금한점이있으시면언__inworld-tts-1_20250721215657.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Hyunwoo_ko_궁금한점이있으시면언__inworld-tts-1-max_20250721215658.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #f0f0f0;">
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Yoona (Customer Service)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"불편을 드려 죄송합니다. 바로 처리해 드릴게요."<br><small style="color: #6c757d; font-style: italic;">(Eng: I apologize for the inconvenience. I will take care of it immediately.)</small></td>
-                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Yoona_ko_불편을드려죄송합니다__inworld-tts-1_20250721215706.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Yoona_ko_불편을드려죄송합니다__inworld-tts-1-max_20250721215707.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                        </tr>
-                        
-                        <!-- Dutch Examples -->
-                        <tr style="border-top: 3px solid #2c3e50; border-bottom: 1px solid #f0f0f0;">
-                            <td rowspan="1" style="padding: 15px; vertical-align: middle; text-align: center; border-right: 1px solid #f0f0f0; font-weight: 600; color: #2c3e50; background: #fafbfc;">Dutch<br/>(NL)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Lore (Customer Service)</td>
-                            <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"Ik begrijp uw situatie volledig, we vinden een oplossing."<br><small style="color: #6c757d; font-style: italic;">(Eng: I fully understand your situation, we will find a solution.)</small></td>
-                            <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Lore_nl_Ikbegrijpu__inworld-tts-1_20250721215731.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Lore_nl_Ikbegrijpu__inworld-tts-1-max_20250721215732.wav" preload="none">
-                                    <source type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Chinese Panel -->
+                    <div class="language-panel" role="tabpanel" id="chinese-panel" aria-labelledby="chinese-tab">
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                <thead>
+                                    <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Speaker</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Text</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6; width: 180px;">TTS-1</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; width: 180px;">TTS-1-Max</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Jing (Assistant)</td>
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"我很乐意为您提供更多帮助。"<br><small style="color: #6c757d; font-style: italic;">(Eng: I would be happy to provide more help.)</small></td>
+                                        <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Jing_zh_我很乐意为您提供更多__inworld-tts-1_20250721215607.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                        <td style="padding: 15px; text-align: center;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Jing_zh_我很乐意为您提供更多__inworld-tts-1-max_20250721215608.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Xinyi (News Anchor)</td>
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"国际局势风云变幻，本台记者将为您带来详细报道。"<br><small style="color: #6c757d; font-style: italic;">(Eng: The international situation is changing rapidly, and our correspondent will bring you a detailed report.)</small></td>
+                                        <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Xinyi_zh_国际局势风云变幻本台__inworld-tts-1_20250721215550.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                        <td style="padding: 15px; text-align: center;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Xinyi_zh_国际局势风云变幻本台__inworld-tts-1-max_20250721215552.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Yichen (Storyteller)</td>
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"每当夜幕降临，村庄里就会传来神秘的歌声。"<br><small style="color: #6c757d; font-style: italic;">(Eng: Whenever night falls, mysterious singing comes from the village.)</small></td>
+                                        <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Yichen_zh_每当夜幕降临村庄里就__inworld-tts-1_20250721215612.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                        <td style="padding: 15px; text-align: center;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Yichen_zh_每当夜幕降临村庄里就__inworld-tts-1-max_20250721215613.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Spanish Panel -->
+                    <div class="language-panel" role="tabpanel" id="spanish-panel" aria-labelledby="spanish-tab">
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                <thead>
+                                    <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Speaker</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Text</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6; width: 180px;">TTS-1</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; width: 180px;">TTS-1-Max</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Diego (Customer Service)</td>
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"Estamos trabajando para resolver su solicitud lo antes posible."<br><small style="color: #6c757d; font-style: italic;">(Eng: We are working to resolve your request as soon as possible.)</small></td>
+                                        <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Diego_es_Estamostra__inworld-tts-1_20250721215633.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                        <td style="padding: 15px; text-align: center;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Diego_es_Estamostra__inworld-tts-1-max_20250721215634.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Lupita (Friend)</td>
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"¿Quieres que vayamos por un café después?"<br><small style="color: #6c757d; font-style: italic;">(Eng: Do you want to go for coffee later?)</small></td>
+                                        <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Lupita_es_Quieresque__inworld-tts-1_20250721215620.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                        <td style="padding: 15px; text-align: center;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Lupita_es_Quieresque__inworld-tts-1-max_20250721215621.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Miguel (Host)</td>
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"Hoy exploraremos las profundidades de la creatividad humana."<br><small style="color: #6c757d; font-style: italic;">(Eng: Today we will explore the depths of human creativity.)</small></td>
+                                        <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Miguel_es_Hoyexplora__inworld-tts-1_20250721215642.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                        <td style="padding: 15px; text-align: center;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Miguel_es_Hoyexplora__inworld-tts-1-max_20250721215642.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- French Panel -->
+                    <div class="language-panel" role="tabpanel" id="french-panel" aria-labelledby="french-tab">
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                <thead>
+                                    <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Speaker</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Text</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6; width: 180px;">TTS-1</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; width: 180px;">TTS-1-Max</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Hélène (Friend)</td>
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"On devrait se voir bientôt pour prendre un café et discuter."<br><small style="color: #6c757d; font-style: italic;">(Eng: We should meet soon for a coffee and chat.)</small></td>
+                                        <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Hélène_fr_Ondevraits__inworld-tts-1_20250721215536.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                        <td style="padding: 15px; text-align: center;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Hélène_fr_Ondevraits__inworld-tts-1-max_20250721215537.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Mathieu (Host)</td>
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"Bienvenue à notre podcast, où nous explorons les mystères de l'univers."<br><small style="color: #6c757d; font-style: italic;">(Eng: Welcome to our podcast, where we explore the mysteries of the universe.)</small></td>
+                                        <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Mathieu_fr_Bienvenueà__inworld-tts-1_20250721215520.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                        <td style="padding: 15px; text-align: center;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Mathieu_fr_Bienvenueà__inworld-tts-1-max_20250721215521.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Korean Panel -->
+                    <div class="language-panel" role="tabpanel" id="korean-panel" aria-labelledby="korean-tab">
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                <thead>
+                                    <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Speaker</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Text</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6; width: 180px;">TTS-1</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; width: 180px;">TTS-1-Max</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Hyunwoo (Host)</td>
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"궁금한 점이 있으시면 언제든지 말씀해주세요."<br><small style="color: #6c757d; font-style: italic;">(Eng: If you have any questions, please feel free to ask at any time.)</small></td>
+                                        <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Hyunwoo_ko_궁금한점이있으시면언__inworld-tts-1_20250721215657.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                        <td style="padding: 15px; text-align: center;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Hyunwoo_ko_궁금한점이있으시면언__inworld-tts-1-max_20250721215658.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Yoona (Customer Service)</td>
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"불편을 드려 죄송합니다. 바로 처리해 드릴게요."<br><small style="color: #6c757d; font-style: italic;">(Eng: I apologize for the inconvenience. I will take care of it immediately.)</small></td>
+                                        <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Yoona_ko_불편을드려죄송합니다__inworld-tts-1_20250721215706.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                        <td style="padding: 15px; text-align: center;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Yoona_ko_불편을드려죄송합니다__inworld-tts-1-max_20250721215707.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Dutch Panel -->
+                    <div class="language-panel" role="tabpanel" id="dutch-panel" aria-labelledby="dutch-tab">
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                <thead>
+                                    <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Speaker</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6;">Text</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; border-right: 1px solid #dee2e6; width: 180px;">TTS-1</th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50; width: 180px;">TTS-1-Max</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; font-weight: 500; color: #2c3e50;">Lore (Customer Service)</td>
+                                        <td style="padding: 15px; vertical-align: top; border-right: 1px solid #f0f0f0; color: #495057;">"Ik begrijp uw situatie volledig, we vinden een oplossing."<br><small style="color: #6c757d; font-style: italic;">(Eng: I fully understand your situation, we will find a solution.)</small></td>
+                                        <td style="padding: 15px; text-align: center; border-right: 1px solid #f0f0f0;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Lore_nl_Ikbegrijpu__inworld-tts-1_20250721215731.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                        <td style="padding: 15px; text-align: center;">
+                                            <audio controls class="audio-player lazy-audio" style="width: 160px;" data-src="audiodemos/Lore_nl_Ikbegrijpu__inworld-tts-1-max_20250721215732.wav" preload="none">
+                                                <source type="audio/wav">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1336,9 +1515,89 @@
                 loadingIndicator.style.display = 'none';
                 tableContainer.style.display = 'block';
                 
-                // Initialize lazy loading for audio elements
+                // Initialize tab functionality
+                initializeLanguageTabs();
+                
+                // Initialize lazy loading for audio elements in the active tab
                 initializeLazyAudio();
             }, 500);
+        }
+
+        // Language tab functionality
+        function initializeLanguageTabs() {
+            const tabs = document.querySelectorAll('.language-tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => switchLanguageTab(tab.dataset.language));
+                tab.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        switchLanguageTab(tab.dataset.language);
+                    }
+                });
+            });
+        }
+
+        function switchLanguageTab(language) {
+            // Update tab states
+            document.querySelectorAll('.language-tab').forEach(tab => {
+                tab.classList.remove('active');
+                tab.setAttribute('aria-selected', 'false');
+            });
+            
+            document.querySelectorAll('.language-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // Activate selected tab and panel
+            const activeTab = document.getElementById(`${language}-tab`);
+            const activePanel = document.getElementById(`${language}-panel`);
+            
+            if (activeTab && activePanel) {
+                activeTab.classList.add('active');
+                activeTab.setAttribute('aria-selected', 'true');
+                activePanel.classList.add('active');
+                
+                // Initialize lazy loading for this panel's audio elements
+                initializeLazyAudioForPanel(activePanel);
+            }
+        }
+
+        function initializeLazyAudioForPanel(panel) {
+            const lazyAudios = panel.querySelectorAll('.lazy-audio:not([data-loaded])');
+
+            // Check if Intersection Observer is supported
+            if ('IntersectionObserver' in window) {
+                const audioObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            loadAudioElement(entry.target);
+                            audioObserver.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    rootMargin: '50px'
+                });
+
+                lazyAudios.forEach(audio => {
+                    audioObserver.observe(audio);
+                });
+            } else {
+                // Fallback for browsers without Intersection Observer
+                lazyAudios.forEach(audio => {
+                    loadAudioElement(audio);
+                });
+            }
+        }
+
+        function loadAudioElement(audio) {
+            const dataSrc = audio.getAttribute('data-src');
+            if (dataSrc && !audio.hasAttribute('data-loaded')) {
+                const source = audio.querySelector('source');
+                source.src = dataSrc;
+                audio.load();
+                audio.setAttribute('data-loaded', 'true');
+            }
         }
         
         // Force load multilingual section (fallback)
@@ -1349,70 +1608,21 @@
             loadingIndicator.style.display = 'none';
             tableContainer.style.display = 'block';
             
+            // Initialize tab functionality
+            initializeLanguageTabs();
+            
             // Load all audio immediately without lazy loading for problematic connections
             const lazyAudios = document.querySelectorAll('.lazy-audio');
             lazyAudios.forEach(audio => {
-                const dataSrc = audio.getAttribute('data-src');
-                if (dataSrc) {
-                    const source = audio.querySelector('source');
-                    source.src = dataSrc;
-                    audio.load();
-                }
+                loadAudioElement(audio);
             });
         }
         
         function initializeLazyAudio() {
-            const lazyAudios = document.querySelectorAll('.lazy-audio');
-            
-            // Check if Intersection Observer is supported
-            if ('IntersectionObserver' in window) {
-                const audioObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const audio = entry.target;
-                            const dataSrc = audio.getAttribute('data-src');
-                            
-                            if (dataSrc && !audio.hasAttribute('data-loaded')) {
-                                const source = audio.querySelector('source');
-                                source.src = dataSrc;
-                                audio.load();
-                                audio.setAttribute('data-loaded', 'true');
-                                audioObserver.unobserve(audio);
-                            }
-                        }
-                    });
-                }, {
-                    threshold: 0.1,
-                    rootMargin: '50px'
-                });
-                
-                lazyAudios.forEach(audio => {
-                    audioObserver.observe(audio);
-                });
-            } else {
-                // Fallback for browsers without Intersection Observer support
-                // Load audio sources only when user scrolls near them
-                function loadAudioOnScroll() {
-                    lazyAudios.forEach(audio => {
-                        if (!audio.hasAttribute('data-loaded')) {
-                            const rect = audio.getBoundingClientRect();
-                            if (rect.top < window.innerHeight + 100) {
-                                const dataSrc = audio.getAttribute('data-src');
-                                if (dataSrc) {
-                                    const source = audio.querySelector('source');
-                                    source.src = dataSrc;
-                                    audio.load();
-                                    audio.setAttribute('data-loaded', 'true');
-                                }
-                            }
-                        }
-                    });
-                }
-                
-                window.addEventListener('scroll', loadAudioOnScroll);
-                window.addEventListener('resize', loadAudioOnScroll);
-                // Initial load for visible elements
-                loadAudioOnScroll();
+            // Only initialize lazy loading for the currently active tab (English by default)
+            const activePanel = document.querySelector('.language-panel.active');
+            if (activePanel) {
+                initializeLazyAudioForPanel(activePanel);
             }
         }
         
