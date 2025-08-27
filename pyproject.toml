@@ -50,7 +50,6 @@ dependencies = [
     "progressbar==2.5",
     "ratelimiter",
     # RLHF
-    "vllm==0.10.0",
     "openai-whisper",
     "zhconv",
     "zhon",

@@ -71,6 +71,22 @@ This automatically:
 * Installs CUDA-optimized PyTorch with the proper [flash attention](https://github.com/Dao-AILab/flash-attention) implementation
 * Sets up all project dependencies
 
+### Optional: Install vLLM for Faster Inference
+
+For faster inference and RLHF training, install vLLM:
+
+```bash
+# Activate virtual environment first
+source .venv/bin/activate
+
+# Install vLLM
+uv pip install vllm==0.10.0
+```
+
+**Note:** vLLM is required for:
+- Fast inference with `--use_vllm=true` flag
+- RLHF training (serves the base model during training)
+
 ## Training Example
 
 In order to train a SpeechLM you need to first vectorize your audio-data into the audio-codes.

@@ -97,9 +97,7 @@ def run_training(
 
     # ------------------ Save config. ------------------ #
     if rank == 0:
-        checkpointing.save_config(
-            config, config.checkpointing.directory, use_wandb
-        )
+        checkpointing.save_config(config, config.checkpointing.directory, use_wandb)
     logging.info(
         "Model config [%s] has been saved to [%s].",
         config,
