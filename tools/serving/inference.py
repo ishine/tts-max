@@ -74,7 +74,6 @@ def main(argv: list[str]) -> None:
     output_path = _OUTPUT_PATH.value
     use_vllm = _USE_VLLM.value
     seed = _SEED.value
-    
     # Initialize device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logging.info(f"Using device: {device}")
@@ -83,12 +82,11 @@ def main(argv: list[str]) -> None:
     logging.info("Loading model...")
     if use_vllm:
         import vllm
-        
         start_time = time.time()
         tokenizer = transformers.AutoTokenizer.from_pretrained(model_checkpoint_path)
         logging.info("Tokenizer with size: %d loaded in %.2f seconds.",
                      len(tokenizer), time.time() - start_time)
-        
+
         model = vllm.LLM(
             model=model_checkpoint_path,
             seed=seed,
@@ -100,7 +98,7 @@ def main(argv: list[str]) -> None:
         tokenizer = transformers.AutoTokenizer.from_pretrained(model_checkpoint_path)
         logging.info("Tokenizer with size: %d loaded in %.2f seconds.",
                      len(tokenizer), time.time() - start_time)
-        
+
         start_time = time.time()
         model = transformers.AutoModelForCausalLM.from_pretrained(
             model_checkpoint_path,
@@ -109,7 +107,7 @@ def main(argv: list[str]) -> None:
         )
         model.eval()
         num_params = sum(p.numel() for p in model.parameters()) / 1e6
-        logging.info("SpeechLM loaded with %.2fM parameters in %.2f seconds.", 
+        logging.info("SpeechLM loaded with %.2fM parameters in %.2f seconds.",
                      num_params, time.time() - start_time)
 
     # Initialize audio codec components
@@ -166,10 +164,9 @@ def main(argv: list[str]) -> None:
 
     # Save output audio
     output_wav = inference_result.wav
-    
+
     # Create output directory if it doesn't exist
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    
     torchaudio.save(output_path, output_wav, audio_decoder.sample_rate)
 
     # Print results
@@ -181,7 +178,7 @@ def main(argv: list[str]) -> None:
 if __name__ == "__main__":
     flags.mark_flags_as_required([
         "model_checkpoint_path",
-        "audio_encoder_path", 
+        "audio_encoder_path",
         "audio_decoder_path",
         "prompt_wav_path",
         "prompt_transcription",
