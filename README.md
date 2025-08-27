@@ -212,9 +212,8 @@ Create training config ( `./example/configs/sft.json` ). Below shows key configu
 * This shows only key parameters - refer to `./example/configs/sft.json` for the complete configuration with all available options
 * To resume from a checkpoint: Add `"checkpoint_file_to_resume_from": "/path/to/your/checkpoint.pt"` to the `checkpointing` section
 
-### 5. Training
+### 5. SFT Training
 
-**SFT training:**
 
 ```bash
 fabric run --devices=$NUM_GPU tts/training/main.py \
@@ -229,7 +228,100 @@ After training completes, you'll find the trained model at `./experiments/my_tts
 * `--dry_run`: Test pipeline without training
 * `--compile_model`: Enable torch.compile optimization (works well only if all your batch' samples have the same length)
 
-### 6. Monitoring
+### 6. RLHF Training
+
+After completing SFT training, you can further improve your model using Reinforcement Learning from Human Feedback (RLHF). This process uses reward functions to align the model with human preferences.
+
+#### 6-1: Convert Model for Serving
+
+First, convert your trained SFT model to a serving-friendly format:
+
+```bash
+python tools/serving/convert_checkpoint.py \
+  --checkpoint_path=/path/to/your/sft_model.pt \
+  --output_path=/path/to/serving/model
+```
+
+#### 6-2: RLHF Configuration
+
+Create an RLHF training config (`./example/configs/rlhf.json`). Key sections include:
+
+```json
+{
+    "training": {
+        "seed": 777,
+        "logging_steps": 50,
+        "eval_steps": 100,
+        "learning_rate": 5e-06,
+        "batch_size": 2,
+        "precision": "bf16",
+        "strategy": "ddp"
+    },
+    "rlhf_training": {
+        "base_model_dir": "/path/to/your/serving/model",
+        "top_p": 0.9,
+        "top_k": 75,
+        "repetition_penalty": 1.1,
+        "temperature": 1.1,
+        "num_generations": 8,
+        "max_prompt_length": 1024,
+        "max_completion_length": 1024,
+        "min_completion_length": 25,
+        "use_vllm": true,
+        "reward_funcs": ["WERRewardFunc"],
+        "reward_weights": [1.0],
+        "save_completions_steps": 50,
+        "per_device_train_batch_size": 4,
+        "num_iterations": 1,
+        "scale_rewards": false,
+        "kl_beta": 0.04
+    },
+    "train_weighted_datasets": {
+        "/path/to/your/vectorized_dataset": 1.0
+    },
+    "val_weighted_datasets": {
+        "/path/to/your/vectorized_dataset": 1.0
+    },
+    "dataset": {
+        "enable_rlhf_training": true,
+        "allowed_languages": ["en", "es", "fr", "de", "it", "pt", "ru", "zh", "ko", "ja", "nl", "pl"]
+    }
+}
+```
+
+**Key RLHF parameters:**
+- `base_model_dir`: Path to your converted serving model
+- `reward_funcs`: List of reward functions (e.g., "WERRewardFunc" for Word Error Rate)
+- `num_generations`: Number of completions to generate per prompt
+- `kl_beta`: KL divergence penalty weight
+- `use_vllm`: Enable vLLM for faster inference during training
+
+#### 6-3: Multi-Node RLHF Training
+
+RLHF training requires two components running simultaneously:
+1. **Training node**: Runs the RLHF training loop
+2. **vLLM node**: Serves the base model for generation
+
+**Update the script configuration:**
+
+Edit `./tts/training/rlhf/run_rlhf_combine.sh` and set:
+```bash
+# Update this path to your converted serving model
+VLLM_MODEL_PATH="/path/to/your/serving/model"
+```
+
+**Launch RLHF training:**
+
+```bash
+# Submit SLURM job with 2 nodes
+sbatch --nodes=2 --gpus-per-node=8 --cpus-per-task=114 \
+  --nodelist=gpu-node1,gpu-node2 --partition=compute \
+  ./tts/training/rlhf/run_rlhf_combine.sh
+```
+
+
+
+### 7. Monitoring
 
 Track progress via:
 * **Weights & Biases**: Loss curves and training metrics
@@ -242,19 +334,34 @@ Once you have a trained model, you can use it for inference to generate speech f
 
 Use the provided inference script for easy speech generation:
 
+**Standard PyTorch inference:**
 ```bash
-python tools/inference.py \
-    --model_checkpoint_path /path/to/your/trained_model.pt \
+python tools/serving/inference.py \
+    --model_checkpoint_path /path/to/your/serving/model \
     --audio_encoder_path /path/to/encoder.pt \
     --audio_decoder_path /path/to/decoder.pt \
     --prompt_wav_path /path/to/your_prompt.wav \
     --prompt_transcription "This is what the speaker says in the prompt." \
     --text "Hello, this is a test of the text-to-speech system." \
-    --output_path output.wav
+    --output_path ./audios/output.wav
+```
+
+**vLLM inference (faster):**
+```bash
+python tools/serving/inference.py \
+    --model_checkpoint_path /path/to/your/serving/model \
+    --audio_encoder_path /path/to/encoder.pt \
+    --audio_decoder_path /path/to/decoder.pt \
+    --prompt_wav_path /path/to/your_prompt.wav \
+    --prompt_transcription "This is what the speaker says in the prompt." \
+    --text "Hello, this is a test of the text-to-speech system." \
+    --output_path ./audios/output.wav \
+    --use_vllm=true \
+    --seed=42
 ```
 
 **Required components:**
-- Trained model checkpoint (`.pt` file from training)
+- Trained model in serving format (converted using `convert_checkpoint.py`)
 - Audio encoder checkpoint (codec `.pt`/`.ckpt` file)
 - Audio decoder checkpoint (codec `.pt`/`.ckpt` file + `model_config.json` in same directory)
 - Audio prompt file (`.wav` format)
