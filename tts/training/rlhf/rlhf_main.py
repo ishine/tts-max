@@ -96,9 +96,8 @@ def run_training(
         )
 
     # ------------------ Save config. ------------------ #
-    checkpointing.save_config(
-        config, config.checkpointing.directory, use_wandb, is_global_zero=rank == 0
-    )
+    if rank == 0:
+        checkpointing.save_config(config, config.checkpointing.directory, use_wandb)
     logging.info(
         "Model config [%s] has been saved to [%s].",
         config,
@@ -126,7 +125,6 @@ def run_training(
         num_generations=config.rlhf_training.num_generations,
         max_prompt_length=config.rlhf_training.max_prompt_length,
         max_completion_length=config.rlhf_training.max_completion_length,
-        min_completion_length=config.rlhf_training.min_completion_length,
         per_device_train_batch_size=config.rlhf_training.per_device_train_batch_size,
         reward_weights=config.rlhf_training.reward_weights,
         num_iterations=config.rlhf_training.num_iterations,

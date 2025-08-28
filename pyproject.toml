@@ -16,13 +16,13 @@ dependencies = [
     # Core ML/AI frameworks
     "torch",
     "torchaudio",
-    "transformers",
+    "transformers==4.55.2",
     "lightning",
     # Training and optimization
     "deepspeed==0.16.9",
     "torchao",
     "torchtune",
-    "trl==0.16.0",
+    "trl==0.21.0",
     "peft==0.15.2",
     # Audio processing
     "librosa",
@@ -49,6 +49,11 @@ dependencies = [
     "matplotlib",
     "progressbar==2.5",
     "ratelimiter",
+    # RLHF
+    "openai-whisper",
+    "zhconv",
+    "zhon",
+    "jiwer",
     # API clients
     "openai",
     "google-genai",

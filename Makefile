@@ -24,7 +24,7 @@ help:
 
 
 install: ## Install the project python environment
-	./setup/setup_python.sh
+	CUDA_VERSION=$(CUDA_VERSION) ./setup/setup_python.sh
 
 
 version: ## Print the project version or bump it (usage: make version [major|minor|patch])

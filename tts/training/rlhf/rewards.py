@@ -17,12 +17,8 @@ from tts.data import data_utils
 from tts.inference import inferencing
 from tts.training.rlhf import ecapa_tdnn, reward_utils
 
-_DEFAULT_CODEC_CHECKPOINT_PATH = (
-    "/path/to/some-9a5f5d.pt"
-)
-_DEFAULT_SIM_CHECKPOINT_PATH = (
-    "/path/to/some-3aac85.pth"
-)
+_DEFAULT_CODEC_CHECKPOINT_PATH = "/path/to/some-9a5f5d.pt"
+_DEFAULT_SIM_CHECKPOINT_PATH = "/path/to/some-3aac85.pth"
 
 
 class RewardFunc(abc.ABC):

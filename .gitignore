@@ -147,6 +147,7 @@ dmypy.json
 wandb/
 hub/
 experiments/
+rlhf_experiments/
 hf_cache/*
 tmp*
 settings.*
